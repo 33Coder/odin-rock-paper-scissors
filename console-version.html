@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+</head>
+<body>
+<script>
+  function getComputerPlay() {
+    return ['rock', 'paper', 'scissors'][parseInt(Math.random() * 3)];
+  }
+
+function playRound(playerGuess, computerGuess) {
+  playerGuess = playerGuess.toLowerCase();
+  if (
+    playerGuess !== 'rock' &&
+    playerGuess !== 'paper' &&
+    playerGuess !== 'scissors'
+  ) {
+    console.log('Invalid Input');
+    return;
+  }
+  if (playerGuess === computerGuess) {
+    console.log("It's a tie!");
+    return;
+  }
+  let result;
+  if (playerGuess === 'rock') {
+    if (computerGuess === 'paper') {
+      result = 'lose';
+    } else {
+      result = 'win';
+    }
+  }
+  if (playerGuess === 'paper') {
+    if (computerGuess === 'scissors') {
+      result = 'lose';
+    } else {
+      result = 'win';
+    }
+  }
+  if (playerGuess === 'scissors') {
+    if (computerGuess === 'rock') {
+      result = 'lose';
+    } else {
+      result = 'win';
+    }
+  }
+  return result;
+}
+
+function game() {
+  let playerScore = 0;
+  let computerScore = 0;
+  for (let i = 0; i < 5; i++) {
+    playerGuess = prompt('rock, paper, or scissors?');
+    computerGuess = getComputerPlay();
+    const result = playRound(playerGuess, computerGuess);
+    if (result === 'win') {
+      playerScore++;
+      console.log(`You win! ${playerGuess} beats ${computerGuess}.`);
+    } else if (result === 'lose') {
+      computerScore++;
+      console.log(`You lose! ${computerGuess} beats ${playerGuess}.`);
+    }
+    console.log({ playerScore, computerScore });
+  }
+}
+game();
+</script>
+</body>
+</html>

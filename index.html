@@ -2,27 +2,59 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title></title>
+  <title>rock paper scissors</title>
 </head>
 <body>
+  <style>
+    :root {
+      --blue: #6D8EA0;
+      font-size: 18px;
+    }
+    #container {
+      margin: 2rem auto;
+      text-align: center;
+    }
+    button {
+      font-family: Sans-serif;
+      border: none;
+      border-radius: 1rem;
+      background: var(--blue);
+      color: white;
+      padding: .5rem 1rem;
+      font-size: 1rem;
+      margin: 1rem .25rem;
+      box-shadow: 2px 6px 20px 0 rgba(0,0,0,0.3);
+      cursor: pointer;
+    }
+    #results, #scores, h2 {
+      color: var(--blue);
+      font-family: Sans-serif;
+      font-size: 1rem;
+      font-weight: bold;
+      margin-bottom: 1rem;
+    }
+    h2 {
+      font-size: 1.5rem;
+      margin: 0;
+    }
+  </style>
+  <div id="container">
+    <h2>Make a Selection:</h2>
+    <button data-selection="Rock">Rock</button>
+    <button data-selection="Paper">Paper</button>
+    <button data-selection="Scissors">Scissors</button>
+    <div id="results"></div>
+    <div id="scores"></div>
+  </div>
 <script>
-  function getComputerPlay() {
-    return ['rock', 'paper', 'scissors'][parseInt(Math.random() * 3)];
-  }
+function getComputerPlay() {
+  return ['rock', 'paper', 'scissors'][parseInt(Math.random() * 3)];
+}
 
 function playRound(playerGuess, computerGuess) {
   playerGuess = playerGuess.toLowerCase();
-  if (
-    playerGuess !== 'rock' &&
-    playerGuess !== 'paper' &&
-    playerGuess !== 'scissors'
-  ) {
-    console.log('Invalid Input');
-    return;
-  }
   if (playerGuess === computerGuess) {
-    console.log("It's a tie!");
-    return;
+    return 'tie';
   }
   let result;
   if (playerGuess === 'rock') {
@@ -52,20 +84,50 @@ function playRound(playerGuess, computerGuess) {
 function game() {
   let playerScore = 0;
   let computerScore = 0;
-  for (let i = 0; i < 5; i++) {
-    playerGuess = prompt('rock, paper, or scissors?');
-    computerGuess = getComputerPlay();
-    const result = playRound(playerGuess, computerGuess);
-    if (result === 'win') {
-      playerScore++;
-      console.log(`You win! ${playerGuess} beats ${computerGuess}.`);
-    } else if (result === 'lose') {
-      computerScore++;
-      console.log(`You lose! ${computerGuess} beats ${playerGuess}.`);
-    }
-    console.log({ playerScore, computerScore });
+  const resultsDiv = document.querySelector('#results');
+  const scoresDiv = document.querySelector('#scores');
+  const buttons = document.querySelectorAll('button');
+  buttons.forEach(button => {
+    button.addEventListener('click', () => {
+      playerGuess = button.dataset.selection;
+      computerGuess = getComputerPlay();
+      const result = playRound(playerGuess, computerGuess);
+      if (result === 'win') {
+        playerScore++;
+        resultsDiv.textContent = `You win! ${playerGuess} beats ${computerGuess}.`;
+      } else if (result === 'lose') {
+        computerScore++;
+        resultsDiv.textContent = `You lose! ${computerGuess} beats ${playerGuess}.`;
+      } else if (result === 'tie') {
+        resultsDiv.textContent = "It's a tie!";
+      }
+      if (playerScore >= 5 || computerScore >= 5) {
+        const gameOverDiv = document.createElement('div');
+        gameOverDiv.classList.add('gameOver');
+        gameOverDiv.innerHTML = `<p>The game has ended! You ${playerScore >
+          computerScore
+          ? 'Win!'
+          : 'Lose!'}</p>`;
+
+        const button = document.createElement('button');
+        button.addEventListener('click', resetGame);
+        button.textContent = 'Restart Game';
+        gameOverDiv.appendChild(button);
+
+        resultsDiv.textContent = '';
+        resultsDiv.appendChild(gameOverDiv);
+      }
+      scoresDiv.textContent = `Player Score: ${playerScore} Computer Score: ${computerScore}`;
+    });
+  });
+  function resetGame() {
+    playerScore = 0;
+    computerScore = 0;
+    resultsDiv.innerHTML = '';
+    scoresDiv.innerHTML = '';
   }
 }
+
 game();
 </script>
 </body>
